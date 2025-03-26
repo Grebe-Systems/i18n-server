@@ -1,0 +1,148 @@
+openapi: 3.0.0
+
+info:
+  version: '1.0.0'
+  title: 'I18n-Server API'
+  description: 'This REST interface provides the client with the required translations and other information to function correctly.'
+  
+paths:
+  /api/i18n/listProjects:
+    get:
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/project'
+      security:
+        - ApiKeyAuth: []
+  /api/i18n/{projectID}/bundle/{localeCode}:
+    get:
+      description: ''
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: localeCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/resourceBundle'
+      security:
+        - ApiKeyAuth: []
+  /api/i18n/{projectID}/bundle/{localeCode}/latest:
+    get:
+      description: ''
+      parameters:
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: localeCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resourceBundle'
+      security:
+        - ApiKeyAuth: []
+  /api/i18n/{projectID}/bundle/{localeCode}/{version}:
+    get:
+      description: ''
+      parameters:
+        - in: path
+          name: localeCode
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: projectID
+          required: true
+          schema:
+            type: string
+        - in: path
+          required: true
+          name: version
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resourceBundle'
+      security:
+        - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+  schemas:
+    project:
+      properties:
+        name:
+          nullable: false
+          type: string
+        id:
+          nullable: false
+          type: string
+        supportedLocales:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/locale'
+    translation:
+      properties:
+        key:
+          nullable: false
+          type: string
+        value:
+          nullable: false
+          type: string
+    resourceBundle:
+      properties:
+        locale:
+          nullable: false
+          $ref: '#/components/schemas/locale'
+        project:
+          nullable: false
+          $ref: '#/components/schemas/project'
+        translations:
+          nullable: false
+          type: array
+          items:
+            $ref: '#/components/schemas/translation'
+        version:
+          nullable: false
+          type: string
+    locale:
+      properties:
+        code:
+          nullable: false
+          type: string
